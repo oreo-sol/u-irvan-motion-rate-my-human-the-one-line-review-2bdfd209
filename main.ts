@@ -28,6 +28,14 @@ if (TEXT !== TEXT.trim()) {
 if (TEXT.includes("\n") || TEXT.includes("\r")) {
   throw new Error("entry must be exactly one line");
 }
+// No newline or control characters anywhere — a single printable line.
+for (const ch of TEXT) {
+  if (ch.charCodeAt(0) < 32) {
+    throw new Error(
+      `entry must not contain control characters, got U+${ch.charCodeAt(0).toString(16).padStart(4, "0").toUpperCase()}`,
+    );
+  }
+}
 // Second validation: the byte count must stay small too — the tie-break
 // goes to the smaller text, so every byte counts.
 const byteLength = Buffer.byteLength(TEXT, "utf8");
